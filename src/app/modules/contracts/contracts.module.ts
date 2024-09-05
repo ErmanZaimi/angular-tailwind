@@ -6,11 +6,12 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NewPageComponent } from './pages/new-page/new-page.component';
 
 @NgModule({
-  declarations: [NewPageComponent], 
+ // declarations: [NewPageComponent],  
   imports: [
     ContractsRoutingModule,
     AngularSvgIconModule.forRoot(),
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NewPageComponent
   ],
   providers: [provideHttpClient(withInterceptorsFromDi())]
 })
