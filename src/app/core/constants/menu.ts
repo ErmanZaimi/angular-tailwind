@@ -12,12 +12,18 @@ export class Menu {
           route: '/contracts',
           children: [
             {
-              label: 'Contracts', route: '/contracts/contracts',
+              label: 'New Page',
+              route: '/contracts/new-page'
+            },
+            {
+              label: 'Contracts Table',
+              route: '/contracts/contracts-table'
             }
           ]
         }
       ]
     },
+    
     {
       group: 'Base',
       separator: false,

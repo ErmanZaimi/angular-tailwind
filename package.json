@@ -51,11 +51,12 @@
     "ngx-sonner": "^2.0.1",
     "rxjs": "~7.4.0",
     "tslib": "^2.3.0",
+    "webpack": "^5.94.0",
     "zone.js": "~0.14.2"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^18.1.0",
-    "@angular/cli": "^18.1.0",
+    "@angular-devkit/build-angular": "^18.2.3",
+    "@angular/cli": "^18.2.3",
     "@angular/compiler-cli": "^18.1.0",
     "@playwright/test": "^1.42.1",
     "@types/jasmine": "~3.10.0",
