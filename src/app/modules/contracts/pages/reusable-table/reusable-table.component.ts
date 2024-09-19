@@ -45,18 +45,9 @@ export class ReusableTableComponent implements OnInit {
     this.paginatedData = this.data.slice((this.currentPage - 1) * this.itemsPerPage, this.currentPage * this.itemsPerPage);
   }
 
-  prevPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      this.updatePagination();
-    }
-  }
-
-  nextPage() {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-      this.updatePagination();
-    }
+  goToPage(page: number) {
+    this.currentPage = page;
+    this.updatePagination();
   }
 
   startEdit(rowIndex: number, columnField: string, value: string) {
@@ -94,13 +85,13 @@ export class ReusableTableComponent implements OnInit {
       this.sortField = field;
       this.sortOrder = 'asc';
     }
-    
+
     this.data.sort((a, b) => {
       if (a[field] < b[field]) return this.sortOrder === 'asc' ? -1 : 1;
       if (a[field] > b[field]) return this.sortOrder === 'asc' ? 1 : -1;
       return 0;
     });
-    
+
     this.updatePagination(); // Update pagination after sorting
   }
 }

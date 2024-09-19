@@ -7,7 +7,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NewPageComponent } from './pages/new-page/new-page.component';
 import { FormsModule } from '@angular/forms';
 import { ReusableTableModule } from './pages/reusable-table/reusable-table.module';
-
 @NgModule({
   declarations: [],
   imports: [

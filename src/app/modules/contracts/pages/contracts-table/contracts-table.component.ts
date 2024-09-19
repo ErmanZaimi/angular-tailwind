@@ -11,7 +11,7 @@ import { ReusableTableModule } from '../reusable-table/reusable-table.module';
 })
 export class ContractsTableComponent {
   columns = [
-    { header: 'Contract ID', field: 'id', editable: true,sortable: true },
+    { header: 'Contract ID', field: 'id', editable: false,sortable: true },
     { header: 'Name', field: 'name', editable: true, sortable: true },
     { header: 'Email', field: 'email', editable: true, sortable: true },
     { header: 'Date', field: 'date', editable: true, sortable: true },

@@ -42,25 +42,13 @@
     </tbody>
   </table>
 
-  <!-- Pagination controls -->
-  <div class="flex justify-between items-center mt-4">
-    <button 
-      (click)="prevPage()" 
-      [disabled]="currentPage === 1" 
-      class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md shadow-sm hover:bg-gray-400 disabled:opacity-50"
-    >
-      Previous
-    </button>
-    <span class="text-sm text-gray-600">Page {{ currentPage }} of {{ totalPages }}</span>
-    <button 
-      (click)="nextPage()" 
-      [disabled]="currentPage === totalPages" 
-      class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md shadow-sm hover:bg-gray-400 disabled:opacity-50"
-    >
-      Next
-    </button>
-  </div>
-</div>
+<!-- Pagination controls -->
+<app-pagination 
+  [currentPage]="currentPage" 
+  [totalPages]="totalPages" 
+  (pageChange)="goToPage($event)"
+></app-pagination>
+
 
 
 
