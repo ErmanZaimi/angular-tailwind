@@ -2,144 +2,118 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReusableTableModule } from '../reusable-table/reusable-table.module';
+import { StrapiService } from '..//..//..//../core/services/strapi.service';
+import { HttpErrorResponse } from '@angular/common/http';
+
+interface Contract {
+  id: number;
+  name: string;
+  email: string;
+  description: string;
+  date: string;
+  expirationDate: string;
+  phoneNumber: string;
+  contractType: string;
+}
+
 @Component({
   selector: 'app-contracts-table',
   standalone: true,
-  imports: [CommonModule,FormsModule,  ReusableTableModule ],
+  imports: [CommonModule, FormsModule, ReusableTableModule],
   templateUrl: './contracts-table.component.html',
-  styleUrl: './contracts-table.component.scss'
+  styleUrls: ['./contracts-table.component.scss']
 })
 export class ContractsTableComponent {
   columns = [
-    { header: 'Contract ID', field: 'id', editable: false,sortable: true },
+    { header: 'Contract ID', field: 'id', editable: false, sortable: true },
     { header: 'Name', field: 'name', editable: true, sortable: true },
     { header: 'Email', field: 'email', editable: true, sortable: true },
     { header: 'Date', field: 'date', editable: true, sortable: true },
     { header: 'Type of Contract', field: 'contractType', editable: true, sortable: true },
     { header: 'Phone Number', field: 'phoneNumber', editable: true, sortable: true },
     { header: 'Expiration Date', field: 'expirationDate', editable: true, sortable: true },
-    { header: 'Actions', field: 'actions', editable: false } 
+    { header: 'Actions', field: 'actions', editable: false }
   ];
 
-  data = [
-    { 
-      id: 1, 
-      name: 'Contract A', 
-      email: 'contractA@example.com',
-      date: '2024-09-10', 
-      contractType: 'Type 1', 
-      phoneNumber: '123-456-7890', 
-      expirationDate: '2025-09-10' 
-    },
-    { 
-      id: 2, 
-      name: 'Contract B', 
-      email: 'contractB@example.com',
-      date: '2024-09-11', 
-      contractType: 'Type 2', 
-      phoneNumber: '098-765-4321', 
-      expirationDate: '2025-09-11' 
-    },
-    { 
-      id: 3, 
-      name: 'Contract C', 
-      email: 'contractC@example.com',
-      date: '2024-09-12', 
-      contractType: 'Type 3', 
-      phoneNumber: '234-567-8901', 
-      expirationDate: '2025-09-12' 
-    },
-    { 
-      id: 4, 
-      name: 'Contract D', 
-      email: 'contractD@example.com',
-      date: '2024-09-13', 
-      contractType: 'Type 4', 
-      phoneNumber: '345-678-9012', 
-      expirationDate: '2025-09-13' 
-    },
-    { 
-      id: 5, 
-      name: 'Contract E', 
-      email: 'contractE@example.com',
-      date: '2024-09-14', 
-      contractType: 'Type 5', 
-      phoneNumber: '456-789-0123', 
-      expirationDate: '2025-09-14' 
-    },
-    { 
-      id: 6, 
-      name: 'Contract F', 
-      email: 'contractE@example.com',
-      date: '2024-09-14', 
-      contractType: 'Type 5', 
-      phoneNumber: '456-789-0123', 
-      expirationDate: '2025-09-14' 
-    },
-    { 
-      id: 7, 
-      name: 'Contract G', 
-      email: 'contractE@example.com',
-      date: '2024-09-14', 
-      contractType: 'Type 5', 
-      phoneNumber: '456-789-0123', 
-      expirationDate: '2025-09-14' 
-    },
-    { 
-      id: 8, 
-      name: 'Contract H', 
-      email: 'contractE@example.com',
-      date: '2024-09-14', 
-      contractType: 'Type 5', 
-      phoneNumber: '456-789-0123', 
-      expirationDate: '2025-09-14' 
-    },
-    { 
-      id: 9, 
-      name: 'Contract I', 
-      email: 'contractE@example.com',
-      date: '2024-09-14', 
-      contractType: 'Type 5', 
-      phoneNumber: '456-789-0123', 
-      expirationDate: '2025-09-14' 
-    },
-    { 
-      id: 10, 
-      name: 'Contract J', 
-      email: 'contractE@example.com',
-      date: '2024-09-14', 
-      contractType: 'Type 5', 
-      phoneNumber: '456-789-0123', 
-      expirationDate: '2025-09-14' 
-    }
-  ];
+  sortField: string = 'id';
+  sortOrder: 'asc' | 'desc' = 'asc';
 
-  filteredData = [...this.data]; // Initialize filtered data
-
+  contracts: Contract[] = []; // Initialize contracts
+  filteredData: Contract[] = []; // Initialize as an empty array
+  data: Contract[] = [];
   searchTerm: string = '';
-  contracts: any;
-  filterData() {
-    console.log('Filtering data with search term:', this.searchTerm); // Debugging log
-    if (!this.searchTerm) {
-      this.filteredData = [...this.data];
-      return;
-    }
-    this.filteredData = this.data.filter(item =>
-      Object.values(item).some(value =>
-        value.toString().toLowerCase().includes(this.searchTerm.toLowerCase())
-      )
+  currentPage: number = 1;
+  itemsPerPage: number = 5;
+  totalItems: number = 0;
+
+  constructor(private strapiService: StrapiService) { }
+
+  ngOnInit(): void {
+    this.fetchContracts();
+  }
+  get totalPages(): number {
+    console.log(this.totalItems);
+    return Math.ceil(this.totalItems/ this.itemsPerPage);
+  }
+
+  fetchContracts() {
+    const sortOptions = this.sortField ? [{ field: this.sortField, order: this.sortOrder }] : []
+    console.log(`Fetching contracts for page: ${this.currentPage}, searchTerm: ${this.searchTerm}`);
+    this.strapiService.getContracts(this.currentPage, this.itemsPerPage, this.searchTerm, sortOptions).subscribe(
+      response => {
+        console.log('API Response:', response);
+        this.filteredData = response.data.map((item: { id: any; attributes: any; }) => ({
+          id: item.id,
+          ...item.attributes
+        }));
+        this.totalItems = response.meta.pagination.total;
+        console.log('Total items:', this.totalItems);
+      },
+      error => console.error('Error fetching contracts:', error)
     );
-    console.log('Filtered data:', this.filteredData); // Debugging log
+  }
+  filterData() {
+    this.currentPage = 1; // Reset to the first page when filtering
+    console.log('Search term:', this.searchTerm);
+    this.fetchContracts(); // Re-fetch contracts based on the search term
   }
 
-  handleUpdate(item: any) {
-    console.log('Update', item);
-    // Handle the update logic here
+  onPageChange(newPage: number) {
+    this.currentPage = newPage; // Update the current page
+    console.log(`Current page set to: ${this.currentPage}`);
+    this.fetchContracts(); // Fetch contracts for the new page
   }
 
-  handleDelete(item: any) {
-    console.log('Deleted contract:', item);
-    this.filteredData = this.filteredData.filter(contract => contract.id !== item.id);
+  onSortChange(sort: { field: string; order: 'asc' | 'desc' }) {
+    this.sortField = sort.field;
+    this.sortOrder = sort.order;
+    this.fetchContracts(); // Re-fetch contracts with new sorting
+  }
+
+  handleUpdate(item: Contract) {
+    // Assuming you have a way to modify the item (e.g., through an input field)
+    this.strapiService.updateContract(item.id, item).subscribe(
+      () => {
+        console.log('Updated contract:', item);
+        // Optionally, you can refresh your filtered data here
+        this.fetchContracts();
+      },
+      (error: HttpErrorResponse) => {
+        console.error('Error updating contract:', error);
+      }
+    );
   }
   
+  handleDelete(item: Contract) {
+    this.strapiService.deleteContract(item.id).subscribe(
+      () => {
+        console.log('Deleted contract:', item);
+        this.filteredData = this.filteredData.filter(contract => contract.id !== item.id);
+      },
+      (error: HttpErrorResponse) => {
+        console.error('Error deleting contract:', error);
+      }
+    );
+  }
 }
+
