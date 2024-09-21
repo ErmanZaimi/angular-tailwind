@@ -15,48 +15,41 @@ interface TableColumn {
 export class ReusableTableComponent implements OnInit {
   @Input() columns: TableColumn[] = [];
   @Input() data: any[] = [];
+  @Input() currentPage: number = 1; // Added to take current page from parent
+  @Input() itemsPerPage: number = 5; // Added to take items per page from parent
+  @Input() totalItems: number = 0;
   @Output() update = new EventEmitter<any>();
   @Output() delete = new EventEmitter<any>();
+  @Output() pageChange = new EventEmitter<number>();
+  @Output() sortChange = new EventEmitter<{ field: string; order: 'asc' | 'desc' }>();
 
   editCell: { rowIndex: number, columnField: string } | null = null;
   tempValue: string = '';
 
-  // Pagination variables
-  currentPage: number = 1;
-  itemsPerPage: number = 5;
   totalPages: number = 0;
   paginatedData: any[] = [];
 
   sortField: string = '';
   sortOrder: 'asc' | 'desc' = 'asc';
-
+  
   ngOnInit() {
     this.updatePagination();
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['data']) {
+    if (changes['data'] || changes['currentPage'] || changes['itemsPerPage']) {
       this.updatePagination();
     }
   }
-
+  
   updatePagination() {
-    this.totalPages = Math.ceil(this.data.length / this.itemsPerPage);
+    this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
     this.paginatedData = this.data.slice((this.currentPage - 1) * this.itemsPerPage, this.currentPage * this.itemsPerPage);
   }
 
-  prevPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      this.updatePagination();
-    }
-  }
-
-  nextPage() {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-      this.updatePagination();
-    }
+  goToPage(page: number) {
+    this.pageChange.emit(page);
+    console.log(`Changing to page: ${page}`);
   }
 
   startEdit(rowIndex: number, columnField: string, value: string) {
@@ -94,14 +87,15 @@ export class ReusableTableComponent implements OnInit {
       this.sortField = field;
       this.sortOrder = 'asc';
     }
-    
+
     this.data.sort((a, b) => {
       if (a[field] < b[field]) return this.sortOrder === 'asc' ? -1 : 1;
       if (a[field] > b[field]) return this.sortOrder === 'asc' ? 1 : -1;
       return 0;
     });
-    
+
     this.updatePagination(); // Update pagination after sorting
+    this.sortChange.emit({ field: this.sortField, order: this.sortOrder });
   }
 }
 

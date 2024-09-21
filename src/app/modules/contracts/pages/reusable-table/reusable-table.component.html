@@ -17,7 +17,7 @@
       </tr>
     </thead>
     <tbody class="bg-white divide-y divide-gray-200">
-      <tr *ngFor="let item of paginatedData; let rowIndex = index">
+      <tr *ngFor="let item of data; let rowIndex = index">
         <td *ngFor="let column of columns" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
           <ng-container *ngIf="editCell?.rowIndex === rowIndex && editCell?.columnField === column.field">
             <input 
@@ -42,25 +42,13 @@
     </tbody>
   </table>
 
-  <!-- Pagination controls -->
-  <div class="flex justify-between items-center mt-4">
-    <button 
-      (click)="prevPage()" 
-      [disabled]="currentPage === 1" 
-      class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md shadow-sm hover:bg-gray-400 disabled:opacity-50"
-    >
-      Previous
-    </button>
-    <span class="text-sm text-gray-600">Page {{ currentPage }} of {{ totalPages }}</span>
-    <button 
-      (click)="nextPage()" 
-      [disabled]="currentPage === totalPages" 
-      class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md shadow-sm hover:bg-gray-400 disabled:opacity-50"
-    >
-      Next
-    </button>
-  </div>
-</div>
+<!-- Pagination controls -->
+<app-pagination 
+  [currentPage]="currentPage" 
+  [totalPages]="totalPages" 
+  (pageChange)="goToPage($event)"
+></app-pagination>
+
 
 
 
