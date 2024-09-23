@@ -1,12 +1,18 @@
 <!-- Search input field -->
-<div>
+<div class="flex items-center justify-between p-4 bg-white shadow-md rounded-md">
   <input
     type="text"
     [(ngModel)]="searchTerm"
     (input)="filterData()"
     placeholder="Search contracts..."
+    class="border border-gray-300 rounded-md px-3 py-2 w-48 focus:outline-none focus:ring focus:ring-blue-300" 
   />
+  <button (click)="openAddContractModal()" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+    Add Contract
+  </button>
 </div>
+
+
 
 <!-- Reusable table component -->
 <div class="overflow-x-auto">
@@ -23,4 +29,8 @@
 </app-reusable-table>
 </div>
 
-
+<app-add-contract-modal 
+  *ngIf="isModalOpen" 
+  (close)="closeAddContractModal()" 
+  (add)="addContract($event)">
+</app-add-contract-modal>

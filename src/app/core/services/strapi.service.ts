@@ -30,6 +30,9 @@ export class StrapiService {
   deleteContract(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`); 
   }
+  createContract(contract: any): Observable<Contract> {
+    return this.http.post<Contract>(this.baseUrl, { data: contract });
+  }
   
 }
 

@@ -25,7 +25,7 @@ export class ReusableTableComponent implements OnInit {
 
   editCell: { rowIndex: number, columnField: string } | null = null;
   tempValue: string = '';
-
+  validity: { [key: string]: boolean } = {};
   totalPages: number = 0;
   paginatedData: any[] = [];
 
@@ -58,17 +58,19 @@ export class ReusableTableComponent implements OnInit {
       this.tempValue = value;
     }
   }
-
-  cancelEdit() {
-    this.editCell = null;
-  }
-
   saveEdit() {
     if (this.editCell) {
       const { rowIndex, columnField } = this.editCell;
-      this.data[rowIndex][columnField] = this.tempValue;
-      this.editCell = null;
-      this.update.emit(this.data[rowIndex]);  // Emit update event
+      if (!this.tempValue.trim()) {
+        this.validity[columnField] = false; // Set invalid for this field
+        return; // Do not proceed with saving
+      }
+  
+      this.validity[columnField] = true; // Set valid for this field
+      this.data[rowIndex][columnField] = this.tempValue; // Update the data array
+      this.editCell = null; // Exit edit mode
+      
+      this.onUpdate(this.data[rowIndex]);  // Emit update event
     }
   }
 

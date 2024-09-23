@@ -7,6 +7,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NewPageComponent } from './pages/new-page/new-page.component';
 import { FormsModule } from '@angular/forms';
 import { ReusableTableModule } from './pages/reusable-table/reusable-table.module';
+import { AddContractModalModule } from '../../shared/components/add-contract-modal/add-contract-modal.module';
 @NgModule({
   declarations: [],
   imports: [
@@ -16,7 +17,8 @@ import { ReusableTableModule } from './pages/reusable-table/reusable-table.modul
     ReactiveFormsModule,
     NewPageComponent,
     FormsModule,
-    ReusableTableModule
+    ReusableTableModule,
+    AddContractModalModule
   ],
   providers: [provideHttpClient(withInterceptorsFromDi())]
  

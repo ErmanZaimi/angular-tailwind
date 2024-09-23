@@ -1,0 +1,50 @@
+<div class="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50 z-50">
+  <div class="bg-white rounded-lg shadow-lg p-8 max-w-lg w-full">
+    <h2 class="text-xl font-bold mb-6 text-center">Add Contract</h2>
+    <form (ngSubmit)="submit()">
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Name</label>
+        <input type="text" [(ngModel)]="name" name="name" required (blur)="onInputChange('name')" class="border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring focus:ring-blue-300" />
+        <span *ngIf="isFieldRequired('name')" class="text-red-500 text-sm">Name is required</span>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Email</label>
+        <input type="email" [(ngModel)]="email" name="email" required (blur)="onInputChange('email')" class="border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring focus:ring-blue-300" />
+        <span *ngIf="isFieldRequired('email')" class="text-red-500 text-sm">Email is required</span>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Contract Type</label>
+        <input type="text" [(ngModel)]="contractType" name="contractType" required (blur)="onInputChange('contractType')" class="border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring focus:ring-blue-300" />
+        <span *ngIf="isFieldRequired('contractType')" class="text-red-500 text-sm">Contract Type is required</span>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Phone Number</label>
+        <input type="text" [(ngModel)]="phoneNumber" name="phoneNumber" required (blur)="onInputChange('phoneNumber')" class="border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring focus:ring-blue-300" />
+        <span *ngIf="isFieldRequired('phoneNumber')" class="text-red-500 text-sm">Phone Number is required</span>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Description</label>
+        <textarea [(ngModel)]="description" name="description" class="border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring focus:ring-blue-300" rows="4"></textarea>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Date</label>
+        <input type="date" [(ngModel)]="date" name="date" required (blur)="onInputChange('date')" class="border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring focus:ring-blue-300" />
+        <span *ngIf="isFieldRequired('date')" class="text-red-500 text-sm">Date is required</span>
+      </div>
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-700">Expiration Date</label>
+        <input type="date" [(ngModel)]="expirationDate" name="expirationDate" required (blur)="onInputChange('expirationDate')" class="border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring focus:ring-blue-300" />
+        <span *ngIf="isFieldRequired('expirationDate')" class="text-red-500 text-sm">Expiration Date is required</span>
+      </div>
+      <div class="flex justify-end">
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-200">Add</button>
+        <button type="button" (click)="close.emit()" class="ml-4 bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 transition duration-200">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+
