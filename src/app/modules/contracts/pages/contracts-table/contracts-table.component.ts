@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ReusableTableModule } from '../reusable-table/reusable-table.module';
 import { StrapiService } from '..//..//..//../core/services/strapi.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { AddContractModalModule } from '../../../../shared/components/add-contract-modal/add-contract-modal.module'; // Correct import
 
 interface Contract {
   id: number;
@@ -19,11 +20,14 @@ interface Contract {
 @Component({
   selector: 'app-contracts-table',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReusableTableModule],
+  imports: [CommonModule, FormsModule, ReusableTableModule, AddContractModalModule],
   templateUrl: './contracts-table.component.html',
   styleUrls: ['./contracts-table.component.scss']
 })
 export class ContractsTableComponent {
+ 
+  isModalOpen: boolean = false;
+
   columns = [
     { header: 'Contract ID', field: 'id', editable: false, sortable: true },
     { header: 'Name', field: 'name', editable: true, sortable: true },
@@ -112,6 +116,27 @@ export class ContractsTableComponent {
       },
       (error: HttpErrorResponse) => {
         console.error('Error deleting contract:', error);
+      }
+    );
+  }
+  openAddContractModal() {
+    this.isModalOpen = true;
+  }
+  
+  closeAddContractModal() {
+    this.isModalOpen = false;
+  }
+  
+  addContract(newContract: { name: string; email: string; contractType: string; phoneNumber: string; description: string; date: string; expirationDate: string }) {
+    this.strapiService.createContract(newContract).subscribe(
+      (response) => {
+        console.log('Contract added:', response);
+        this.fetchContracts(); // Refresh the table
+        this.closeAddContractModal(); // Close the modal after adding
+      },
+      (error) => {
+        console.error('Error adding contract:', error);
+        alert('Failed to add contract. Please try again.'); // Optional: notify user of the error
       }
     );
   }
