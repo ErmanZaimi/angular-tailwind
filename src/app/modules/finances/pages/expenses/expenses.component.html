@@ -1,0 +1,25 @@
+<h2 class="text-xl mb-2 text-center">Past Expenses</h2>
+<div *ngIf="message" [ngClass]="{'text-green-600': messageType === 'success', 'text-red-600': messageType === 'error'}" class="p-4">
+  {{ message }}
+</div>
+<div class="flex items-center justify-between p-4 bg-white shadow-md rounded-md">
+  <div class="flex-grow max-w-xs mr-4"> <!-- Set a max width and margin -->
+    <input type="text" [(ngModel)]="searchTerm" (input)="fetchExpenses()" placeholder="Search expenses..."
+    class="border border-gray-300 rounded-md px-3 py-2 w-48 focus:outline-none focus:ring focus:ring-blue-300" />
+  </div>
+
+  <button (click)="openAddExpenseModal()" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+    Post New Expense
+  </button>
+</div>
+
+<app-add-expense-modal *ngIf="isModalOpen" (close)="isModalOpen = false"
+  (add)="handleAddExpense($event)"></app-add-expense-modal>
+
+
+<div class="w-full p-4">
+  <app-reusable-table [columns]="columns" [data]="pastExpenses" [currentPage]="currentPage"
+    [itemsPerPage]="itemsPerPage" (pageChange)="onPageChange($event)" (sortChange)="onSortChange($event)"
+    [totalItems]="totalItems" (delete)="handleDeleteExpense($event)" (update)="handleUpdateExpense($event)" [isLoading]="isLoading">
+  </app-reusable-table>
+</div>

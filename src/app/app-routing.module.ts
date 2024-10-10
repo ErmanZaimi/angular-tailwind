@@ -22,6 +22,11 @@ const routes: Routes = [
     loadChildren: () => import('./modules/contracts/contracts.module').then((m) => m.ContractsModule),
   },
   
+    {
+      path: 'finances',
+      loadChildren: () => import('./modules/finances/finances.module').then(m => m.FinancesModule),
+    },
+  
   { path: '**', redirectTo: 'errors/404' },
 ];
 
