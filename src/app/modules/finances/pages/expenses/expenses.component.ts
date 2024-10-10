@@ -43,6 +43,9 @@ export class ExpensesComponent implements OnInit {
   sortOrder: 'asc' | 'desc' = 'asc'; // Sort order
   totalPages = 0;
   totalItems: number = 0;
+  message: string = '';
+  messageType: 'success' | 'error' | null = null;
+  isLoading: boolean = false;
 
   constructor(private strapiService: StrapiService) {}
 
@@ -50,6 +53,7 @@ export class ExpensesComponent implements OnInit {
     this.fetchExpenses();
   }
   fetchExpenses(): void {
+    this.isLoading = true; 
     const page = this.currentPage;
     const itemsPerPage = this.itemsPerPage;
     const searchTerm = this.searchTerm.trim();
@@ -74,6 +78,9 @@ export class ExpensesComponent implements OnInit {
         },
         error => {
           console.error('Error fetching expenses:', error);
+        },
+        () => {
+          this.isLoading = false; // Stop loading
         }
       );
   }
@@ -101,39 +108,67 @@ export class ExpensesComponent implements OnInit {
   }
   
 handleAddExpense(expense: { amount: number; category: string; description: string; date: string; title: string }) {
+  this.isLoading = true;
   this.strapiService.createExpense(expense).subscribe(
     (response) => {
       console.log('Expense added:', response);
       this.fetchExpenses(); // Refresh the list of expenses
+      this.onMessageReceived({ msg: 'Expense added successfully!', type: 'success' });
     },
     (error) => {
       console.error('Error adding expense:', error);
       // Optionally show an error message to the user
+      this.onMessageReceived({ msg: 'Error adding expense. Please try again.', type: 'error' });
+    },
+    () => {
+      this.isLoading = false; // Stop loading
     }
   );
 }
 
 handleDeleteExpense(expense: any) {
+  this.isLoading = true;
   this.strapiService.deleteExpense(expense.id).subscribe(
     () => {
       console.log('Deleted expense:', expense);
       this.pastExpenses = this.pastExpenses.filter(e => e.id !== expense.id);
+      this.onMessageReceived({ msg: 'Expense deleted successfully!', type: 'success' });
     },
     (error: HttpErrorResponse) => {
       console.error('Error deleting expense:', error);
+      this.onMessageReceived({ msg: 'Error deleting expense. Please try again.', type: 'error' });
+    },
+    () => {
+      this.isLoading = false; // Stop loading
     }
   );
 }
 handleUpdateExpense(expense: any) {
+  this.isLoading = true;
   this.strapiService.updateExpense(expense.id, expense).subscribe(
     () => {
       console.log('Updated expense:', expense);
       this.fetchExpenses(); // Refresh the list of expenses
+      this.onMessageReceived({ msg: 'Expense updated successfully!', type: 'success' });
     },
     (error: HttpErrorResponse) => {
       console.error('Error updating expense:', error);
+      this.onMessageReceived({ msg: 'Error updating expense. Please try again.', type: 'error' });
+    },
+    () => {
+      this.isLoading = false; // Stop loading
     }
   );
+}
+onMessageReceived(event: { msg: string; type: 'success' | 'error' | null }) {
+  this.message = event.msg;
+  this.messageType = event.type;
+
+  // Clear the message after 3 seconds
+  setTimeout(() => {
+    this.message = '';
+    this.messageType = null;
+  }, 3000);
 }
 
 }

@@ -1,4 +1,7 @@
 <h2 class="text-xl mb-2 text-center">Past Income</h2>
+<div *ngIf="message" [ngClass]="{'text-green-600': messageType === 'success', 'text-red-600': messageType === 'error'}" class="p-4">
+  {{ message }}
+</div>
 <div class="flex items-center justify-between p-4 bg-white shadow-md rounded-md">
   <div class="flex-grow max-w-xs mr-4"> <!-- Set a max width -->
     <input type="text" [(ngModel)]="searchTerm" (input)="filterData()" placeholder="Search income..."
@@ -18,6 +21,6 @@
 <div class="w-full p-4">
   <app-reusable-table [columns]="columns" [data]="pastIncome" [currentPage]="currentPage"
     [itemsPerPage]="itemsPerPage" (pageChange)="onPageChange($event)" (sortChange)="onSortChange($event)"
-    [totalItems]="totalItems" (delete)="handleDeleteIncome($event)" (update)="handleUpdateIncome($event)">
+    [totalItems]="totalItems" (delete)="handleDeleteIncome($event)" (update)="handleUpdateIncome($event)"[isLoading]="isLoading">
   </app-reusable-table>
 </div>

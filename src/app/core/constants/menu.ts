@@ -23,6 +23,34 @@ export class Menu {
         }
       ]
     },
+
+    {
+      group: 'Finances',
+      separator: false,
+      items: [
+        {
+          icon: 'assets/icons/heroicons/outline/chart-pie.svg', // Adjust the icon path as needed
+          label: 'Dashboard',
+          route: '/finances',
+          children: [
+            {
+              label: 'Expenses',
+              route: '/finances/expenses'
+            },
+            {
+              label: 'Income',
+              route: '/finances/income'
+            },
+            {
+              label: 'Charts', // New entry for the charts page
+              route: '/finances/charts' // Route to the charts page
+            }
+          ]
+        }
+      ]
+    },
+    
+    
     
     {
       group: 'Base',

@@ -41,6 +41,10 @@ export class IncomeComponent implements OnInit {
   sortField = ''; // Field to sort by
   sortOrder: 'asc' | 'desc' = 'asc'; // Sort order
   totalItems: number = 0;
+  message: string = '';
+  messageType: 'success' | 'error' | null = null;
+  isLoading: boolean = false;
+
 
   constructor(private strapiService: StrapiService) {}
 
@@ -49,6 +53,7 @@ export class IncomeComponent implements OnInit {
   }
 
   fetchIncome(): void {
+    this.isLoading = true;
     const page = this.currentPage;
     const itemsPerPage = this.itemsPerPage;
     const searchTerm = this.searchTerm.trim();
@@ -73,6 +78,9 @@ export class IncomeComponent implements OnInit {
         },
         error => {
           console.error('Error fetching income:', error);
+        },
+        () => {
+          this.isLoading = false; // Stop loading
         }
       );
   }
@@ -100,38 +108,66 @@ export class IncomeComponent implements OnInit {
   }
 
   handleAddIncome(income: { amount: number; Category: string; description: string; date: string; title: string }) {
+    this.isLoading = true;
     this.strapiService.createIncome(income).subscribe(
       (response) => {
         console.log('Income added:', response);
         this.fetchIncome(); // Refresh the list of income
+        this.onMessageReceived({ msg: 'Income added successfully!', type: 'success' });
       },
       (error) => {
         console.error('Error adding income:', error);
+        this.onMessageReceived({ msg: 'Error adding income. Please try again.', type: 'error' });
+      },
+      () => {
+        this.isLoading = false; // Stop loading
       }
     );
   }
 
   handleDeleteIncome(income: any) {
+    this.isLoading = true;
     this.strapiService.deleteIncome(income.id).subscribe(
       () => {
         console.log('Deleted income:', income);
         this.pastIncome = this.pastIncome.filter(i => i.id !== income.id);
+        this.onMessageReceived({ msg: 'Income deleted successfully!', type: 'success' });
       },
       (error: HttpErrorResponse) => {
         console.error('Error deleting income:', error);
+        this.onMessageReceived({ msg: 'Error deleting income. Please try again.', type: 'error' });
+      },
+      () => {
+        this.isLoading = false; // Stop loading
       }
     );
   }
 
   handleUpdateIncome(income: any) {
+    this.isLoading = true;
     this.strapiService.updateIncome(income.id, income).subscribe(
       () => {
         console.log('Updated income:', income);
         this.fetchIncome(); // Refresh the list of income
+        this.onMessageReceived({ msg: 'Income updated successfully!', type: 'success' });
       },
       (error: HttpErrorResponse) => {
         console.error('Error updating income:', error);
+        this.onMessageReceived({ msg: 'Error updating income. Please try again.', type: 'error' });
+      },
+      () => {
+        this.isLoading = false; // Stop loading
       }
     );
+  }
+  onMessageReceived(event: { msg: string; type: 'success' | 'error' | null }) {
+    this.message = event.msg;
+    this.messageType = event.type;
+  
+    // Clear the message after 3 seconds
+    setTimeout(() => {
+      this.message = '';
+      this.messageType = null;
+    }, 3000);
   }
 }
